@@ -10,7 +10,7 @@ def index(request):
 
 def postlist(request):
     posts = Post.objects.filter(status="published")
-    return render(request, "blog/postlist.html", {"posts": posts})
+    return render(request, "blog/post/postlist.html", {"posts": posts})
 
 
 def post_details(
@@ -28,4 +28,4 @@ def post_details(
         publish__day=day,
         slug=post,
     )
-    return render(request, "blog/post_details.html", {"post": post})
+    return render(request, "blog/post/post_details.html", {"post": post})
