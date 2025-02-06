@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ post.title }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            color: #333;
+        }
+        p {
+            font-size: 18px;
+            line-height: 1.6;
+        }
+        .published-date {
+            color: #666;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2> {{ post.title }} : {{ post.author }} </h2>
+        <p> {{ post.body }} </p>
+        <p class="published-date">Published: <span id="published-date">{{ post.published }}</span></p>
+    </div>
+
+    <!-- اضافه کردن JSON -->
+    <script>
+        let postData = {
+            "title": "{{ post.title }}",
+            "author": "{{ post.author }}",
+            "body": "{{ post.body }}",
+            "published": "{{ post.published }}"
+        };
+
+        console.log("Post Data in JSON:", postData);
+
+        // تبدیل تاریخ به فرمت خواناتر
+        document.addEventListener("DOMContentLoaded", function () {
+            let publishedElement = document.getElementById("published-date");
+            let dateStr = publishedElement.textContent;
+            let dateObj = new Date(dateStr);
+            
+            if (!isNaN(dateObj)) {
+                let formattedDate = dateObj.toLocaleDateString("fa-IR", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric"
+                });
+                publishedElement.textContent = formattedDate;
+            }
+        });
+    </script>
+
+</body>
+</html>

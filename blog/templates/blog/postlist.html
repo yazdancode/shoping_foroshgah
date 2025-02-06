@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>List of Posts</title>
+    <!-- لینک دادن به فایل CSS -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        a {
+            text-decoration: none;
+            color: #007BFF;
+            margin: 10px 0;
+            display: inline-block;
+        }
+
+        a:hover {
+            color: #0056b3;
+        }
+
+        h2 {
+            font-size: 1.5em;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>List of Posts</h1>
+    {% for post in posts %}
+        <a href="{{ post.get_absolute_url }}">
+            <h2>{{ post.title }} : {{ post.author }}</h2>
+        </a>
+    {% endfor %}
+
+    <!-- لینک دادن به فایل JavaScript -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            alert("Welcome to the list of posts!");
+        });
+    </script>
+</body>
+</html>
