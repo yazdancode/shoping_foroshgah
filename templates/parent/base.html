@@ -4,10 +4,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %} Default Title {% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <title>{% block title %}عنوان پیش‌فرض{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'parent/css/styles.css' %}">
 </head>
 <body>
-    {% block content %} {% endblock %}
+    <header>
+        {% include 'blog/partials/header.html' %}
+        {% include 'blog/partials/navigation.html' %}
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+        <div>
+            {% include 'blog/partials/pagination.html' %}
+        </div>
+    </main>
+
+    {% block extra_content %}{% endblock %}
+
+    <footer>
+        {% include 'blog/partials/footer.html' %}
+    </footer>
 </body>
 </html>
