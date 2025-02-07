@@ -7,11 +7,11 @@ from django.urls import reverse
 from django.utils import timezone
 from jalali_date import datetime2jalali
 
-# class PublishedManager(models.Manager):
-#     """مدیریت پست‌های منتشر شده"""
-#     def get_queryset(self):
-#         return super().get_queryset().filter(status="published")
-#
+class PublishedManager(models.Manager):
+    """مدیریت پست‌های منتشر شده"""
+    def get_queryset(self):
+        return super().get_queryset().filter(status="published")
+
 
 
 def persian_now():
@@ -43,8 +43,8 @@ class Post(models.Model):
         "وضعیت", max_length=15, choices=STATUS_CHOICES, default="draft", db_index=True
     )
 
-    # objects = models.Manager()  # مدیر پیش‌فرض
-    # published = PublishedManager()  # مدیر سفارشی برای پست‌های منتشر شده
+    objects = models.Manager()
+    published = PublishedManager()
 
     class Meta:
         ordering = ("-publish",)

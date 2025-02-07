@@ -1,22 +1,22 @@
 {% extends 'parent/base.html' %}
 
-{% block title %} List of Posts {% endblock %}
+{% block title %} لیست پست‌ها {% endblock %}
 
 {% block content %}
-    <h1>List of Posts</h1>
+    <h1>لیست پست‌ها</h1>
 
     {% for post in posts %}
         <div class="post-item">
             <a href="{{ post.get_absolute_url }}">
                 <h2>{{ post.title }}</h2>
-                <p>By {{ post.author }}</p>
+                <p>نویسنده: {{ post.author }}</p>
             </a>
         </div>
     {% empty %}
-        <p>No posts available.</p>
+        <p>هیچ پستی موجود نیست.</p>
     {% endfor %}
 
-    <!-- Correctly pass the 'page' object for pagination -->
-    {% include 'blog/partials/pagination.html' with page=page %}
+    <!-- ارسال مقدار صحیح برای صفحه‌بندی -->
+    {% include 'blog/partials/pagination.html' with posts=page_obj %}
 
 {% endblock %}
