@@ -7,11 +7,12 @@ from django.urls import reverse
 from django.utils import timezone
 from jalali_date import datetime2jalali
 
+
 class PublishedManager(models.Manager):
     """مدیریت پست‌های منتشر شده"""
+
     def get_queryset(self):
         return super().get_queryset().filter(status="published")
-
 
 
 def persian_now():
@@ -71,3 +72,12 @@ class Post(models.Model):
 
     def __repr__(self):
         return f"<Post(title={self.title}, status={self.status})>"
+
+
+class Account(models.Model):
+    name = models.CharField(max_length=11, verbose_name="نام")
+    phone = models.CharField(max_length=11, verbose_name="تلفن")
+
+    class Meta:
+        verbose_name = "حساب کاربری"
+        verbose_name_plural = "حساب کاربری"

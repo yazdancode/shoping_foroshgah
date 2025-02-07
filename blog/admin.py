@@ -1,7 +1,7 @@
 from django.contrib import admin
 from jalali_date import datetime2jalali
 
-from blog.models import Post
+from blog.models import Account, Post
 
 
 @admin.register(Post)
@@ -20,3 +20,8 @@ class PostAdmin(admin.ModelAdmin):
         return datetime2jalali(obj.publish).strftime("%Y/%m/%d - %H:%M")
 
     get_jalali_publish.short_description = "تاریخ انتشار (شمسی)"
+
+
+@admin.register(Account)
+class AccountAdmin(admin.ModelAdmin):
+    list_display = ("name", "phone")
