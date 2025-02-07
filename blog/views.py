@@ -5,7 +5,7 @@ from blog.models import Post
 
 
 def index(request):
-    return HttpResponse("be weblog welcome")
+    return render(request, 'blog/index.html', {})
 
 
 def postlist(request):
