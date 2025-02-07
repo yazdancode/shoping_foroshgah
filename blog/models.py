@@ -11,13 +11,15 @@ from jalali_date import datetime2jalali
 #     """مدیریت پست‌های منتشر شده"""
 #     def get_queryset(self):
 #         return super().get_queryset().filter(status="published")
-#         
+#
+
 
 def persian_now():
     now = jdatetime.datetime.now()
     gregorian_now = now.togregorian()
     utc_offset = gregorian_now.utcoffset()
     return gregorian_now.strftime("%Y-%m-%dT%H:%M:%S"), utc_offset
+
 
 class Post(models.Model):
     STATUS_CHOICES = (

@@ -4,9 +4,19 @@
 
 {% block content %}
     <h1>List of Posts</h1>
+
     {% for post in posts %}
-        <a href="{{ post.get_absolute_url }}">
-            <h2>{{ post.title }} : {{ post.author }}</h2>
-        </a>
+        <div class="post-item">
+            <a href="{{ post.get_absolute_url }}">
+                <h2>{{ post.title }}</h2>
+                <p>By {{ post.author }}</p>
+            </a>
+        </div>
+    {% empty %}
+        <p>No posts available.</p>
     {% endfor %}
+
+    <!-- Correctly pass the 'page' object for pagination -->
+    {% include 'blog/partials/pagination.html' with page=page %}
+
 {% endblock %}
