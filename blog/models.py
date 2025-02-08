@@ -75,9 +75,41 @@ class Post(models.Model):
 
 
 class Account(models.Model):
-    name = models.CharField(max_length=11, verbose_name="نام")
-    phone = models.CharField(max_length=11, verbose_name="تلفن")
+    GENDER_CHOICES = [
+        ("male", "مرد"),
+        ("female", "زن"),
+        ("other", "سایر"),
+    ]
+
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, related_name="account", verbose_name="کاربران"
+    )
+    gender = models.CharField(
+        max_length=10,
+        choices=GENDER_CHOICES,
+        verbose_name="جنسیت",
+        blank=True,
+        null=True,
+    )
+    address = models.CharField(
+        max_length=255, verbose_name="آدرس", null=True, blank=True
+    )
+    first_name = models.CharField(max_length=50, verbose_name="نام", default="")
+    last_name = models.CharField(max_length=50, verbose_name="نام خانوادگی", default="")
+    email = models.EmailField(
+        max_length=254, verbose_name="ایمیل", unique=True, blank=True, null=True
+    )
+    password = models.CharField(max_length=128, verbose_name="رمز عبور")
+    phone = models.CharField(max_length=11, verbose_name="تلفن", unique=True)
+    picture = models.ImageField(
+        upload_to="profile_pictures/", verbose_name="عکس پروفایل", null=True, blank=True
+    )
+    created = models.DateTimeField("تاریخ ایجاد", auto_now_add=True)
+    updated = models.DateTimeField("آخرین بروزرسانی", auto_now=True)
 
     class Meta:
         verbose_name = "حساب کاربری"
-        verbose_name_plural = "حساب کاربری"
+        verbose_name_plural = "حساب‌های کاربری"
+
+    def __str__(self):
+        return self.user.username

@@ -1,29 +1,39 @@
 {% extends 'parent/base.html' %}
 
 {% block content %}
-  <h1 style="color: #007fff; text-align: center;">Create or Edit Your Account</h1>
+  <h1 style="color: #007fff; text-align: center;">فرم اطلاعات شخصی {{ account.user.last_name|default:'' }}</h1>
 
   <form method="POST">
     {% csrf_token %}
-    <div>
-      {{ form.as_p }}
-    </div>
 
-    <button type="submit" style="display: block; margin: 20px auto; padding: 10px 20px; background-color: #007fff; color: white; border: none; border-radius: 5px;">
-      Submit
-    </button>
+    <label for="first_name">نام:</label>
+    <input type="text" id="first_name" name="first_name" required value="{{ form.first_name.value|default:account.user.first_name }}">
+    <br>
+
+    <label for="last_name">نام خانوادگی:</label>
+    <input type="text" id="last_name" name="last_name" required value="{{ form.last_name.value|default:account.user.last_name }}">
+    <br>
+
+    <label for="phone">شماره تلفن:</label>
+    <input type="text" id="phone" name="phone" value="{{ account.phone|default:'' }}" readonly>
+    <br>
+
+    <label for="email">ایمیل:</label>
+    <input type="email" id="email" name="email" required value="{{ form.email.value|default:account.user.email }}" >
+    <br>
+
+    <label>جنسیت:</label>
+    <input type="radio" name="gender" value="M" id="male" {% if account.gender == 'M' %} checked {% endif %}>
+    <label for="male">مرد</label>
+
+    <input type="radio" name="gender" value="F" id="female" {% if account.gender == 'F' %} checked {% endif %}>
+    <label for="female">زن</label>
+    <br>
+
+    <label for="address">آدرس:</label>
+    <textarea name="address" id="address" required>{{ form.address.value|default:account.address }}</textarea>
+    <br><br>
+
+    <input type='submit' value="ثبت">
   </form>
-
-  {% if form.errors %}
-    <div class="errors" style="color: red; margin-top: 20px;">
-      <p><strong>There are errors in your form:</strong></p>
-      <ul>
-        {% for field in form %}
-          {% for error in field.errors %}
-            <li>{{ error }}</li>
-          {% endfor %}
-        {% endfor %}
-      </ul>
-    </div>
-  {% endif %}
 {% endblock %}

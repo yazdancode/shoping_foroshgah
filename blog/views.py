@@ -1,28 +1,12 @@
-from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
-from django.http import HttpResponse
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic import ListView
 
 from blog.forms import AccountForm
-from blog.models import Post
+from blog.models import Account, Post
 
 
 def index(request):
     return render(request, "blog/index.html", {})
-
-
-# def postlist(request):
-#     posts = Post.objects.filter(status="published")
-#     paginator = Paginator(posts, 2)
-#     page = request.GET.get("page")
-
-#     try:
-#         posts = paginator.page(page)
-#     except PageNotAnInteger:
-#         posts = paginator.page(1)
-#     except EmptyPage:
-#         posts = paginator.page(paginator.num_pages)
-#     return render(request, "blog/post/postlist.html", {"posts": posts})
 
 
 class PostListView(ListView):
@@ -45,11 +29,31 @@ def post_details(request, year, month, day, post):
 
 
 def user_account(request):
+    user = request.user
+    account, created = Account.objects.get_or_create(user=user)
+
     if request.method == "POST":
         form = AccountForm(data=request.POST)
         if form.is_valid():
-            form.save()
+            user.first_name = form.cleaned_data["first_name"]
+            user.last_name = form.cleaned_data["last_name"]
+            account.gender = form.cleaned_data["gender"]
+            account.address = form.cleaned_data["address"]
+            user.email = form.cleaned_data["email"]
+            user.save()
+            account.save()
+            return redirect("index")
+        print(form.errors)
     else:
-        form = AccountForm(data=request.GET)
+        initial_data = {
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "gender": account.gender,
+            "address": account.address,
+            "email": user.email,
+        }
+        form = AccountForm(initial=initial_data)
 
-    return render(request, "blog/post/user_account.html", {"form": form})
+    return render(
+        request, "blog/post/user_account.html", {"form": form, "account": account}
+    )
