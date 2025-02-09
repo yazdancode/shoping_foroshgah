@@ -40,10 +40,17 @@ class AccountForm(forms.Form):
             )
         ],
     )
-    email = forms.EmailField(
-        max_length=50,
-        widget=forms.EmailInput,
-        required=True,
-        label="ایمیل",
-        help_text="لطفا ایمیل خود را وارد کنید.",
-    )
+    # email = forms.EmailField(
+    #     max_length=50,
+    #     widget=forms.EmailInput,
+    #     required=True,
+    #     label="ایمیل",
+    #     help_text="لطفا ایمیل خود را وارد کنید.",
+    # )
+    # phone = forms.CharField(
+    #     max_length=11,
+    #     widget=forms.TextInput,
+    #     required=True,
+    #     label="تلفن",
+    #     help_text="شماره تلفن خود را وارد کنید.",
+    # )

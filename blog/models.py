@@ -100,7 +100,9 @@ class Account(models.Model):
         max_length=254, verbose_name="ایمیل", unique=True, blank=True, null=True
     )
     password = models.CharField(max_length=128, verbose_name="رمز عبور")
-    phone = models.CharField(max_length=11, verbose_name="تلفن", unique=True)
+    phone = models.CharField(
+        max_length=11, verbose_name="تلفن", unique=True, null=True, blank=True
+    )
     picture = models.ImageField(
         upload_to="profile_pictures/", verbose_name="عکس پروفایل", null=True, blank=True
     )
@@ -112,4 +114,4 @@ class Account(models.Model):
         verbose_name_plural = "حساب‌های کاربری"
 
     def __str__(self):
-        return self.user.username
+        return self.user.first_name + " " + self.user.last_name
