@@ -6,16 +6,13 @@ from jalali_date import datetime2jalali
 
 
 class PublishedManager(models.Manager):
-
     def get_queryset(self):
         return super().get_queryset().filter(status="published")
 
 
 def persian_now():
     now = jdatetime.datetime.now()
-    gregorian_now = now.togregorian()
-    utc_offset = gregorian_now.utcoffset()
-    return gregorian_now.strftime("%Y-%m-%dT%H:%M:%S"), utc_offset
+    return now.togregorian()
 
 
 class Post(models.Model):
@@ -40,8 +37,8 @@ class Post(models.Model):
         "وضعیت", max_length=15, choices=STATUS_CHOICES, default="draft", db_index=True
     )
 
-    objects = models.Manager()
-    published = PublishedManager()
+    objects = models.Manager()  # مدیر پیش‌فرض
+    published = PublishedManager()  # مدیر سفارشی برای پست‌های منتشر شده
 
     class Meta:
         ordering = ("-publish",)
