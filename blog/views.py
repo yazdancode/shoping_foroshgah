@@ -29,25 +29,30 @@ def post_details(request, year, month, day, post):
 
 
 def user_account(request):
+    user = request.user
     try:
-        account = Account.objects.get(user=request.user)
+        account = Account.objects.get(user=user)
     except Account.DoesNotExist:
-        account = Account.objects.create(user=request.user)
-
-    form = AccountForm(data=request.POST) if request.method == "POST" else AccountForm()
-
+        account = Account.objects.create(user=user)
     if request.method == "POST":
+        form = AccountForm(request.POST)
         if form.is_valid():
-            request.user.first_name = form.cleaned_data["first_name"]
-            request.user.last_name = form.cleaned_data["last_name"]
+            user.first_name = form.cleaned_data["first_name"]
+            user.last_name = form.cleaned_data["last_name"]
+            user.save()
             account.gender = form.cleaned_data["gender"]
             account.address = form.cleaned_data["address"]
-            request.user.save()
+            account.age = form.cleaned_data["age"]
+            account.phone = form.cleaned_data["phone"]
             account.save()
             return redirect("index")
         else:
-            print(form.errors)
-
+            return render(
+                request,
+                "blog/post/user_account.html",
+                {"form": form, "account": account},
+            )
+    form = AccountForm()
     return render(
         request, "blog/post/user_account.html", {"form": form, "account": account}
     )

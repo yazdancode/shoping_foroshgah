@@ -1,15 +1,11 @@
-from datetime import timezone
-
 import jdatetime
 from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse
-from django.utils import timezone
 from jalali_date import datetime2jalali
 
 
 class PublishedManager(models.Manager):
-    """مدیریت پست‌های منتشر شده"""
 
     def get_queryset(self):
         return super().get_queryset().filter(status="published")
@@ -28,7 +24,7 @@ class Post(models.Model):
         ("published", "منتشر شده"),
     )
 
-    title = models.CharField("عنوان", max_length=250)  # VARCHAR
+    title = models.CharField("عنوان", max_length=250)
     slug = models.SlugField("اسلاگ", max_length=250, unique_for_date="publish")
     author = models.ForeignKey(
         User,
@@ -36,7 +32,7 @@ class Post(models.Model):
         related_name="blog_posts",
         verbose_name="نویسنده",
     )
-    body = models.TextField("متن")  # TEXT
+    body = models.TextField("متن")
     publish = models.DateTimeField("تاریخ انتشار", default=persian_now, db_index=True)
     created = models.DateTimeField("تاریخ ایجاد", auto_now_add=True)
     updated = models.DateTimeField("آخرین بروزرسانی", auto_now=True)
@@ -105,6 +101,9 @@ class Account(models.Model):
     )
     picture = models.ImageField(
         upload_to="profile_pictures/", verbose_name="عکس پروفایل", null=True, blank=True
+    )
+    age = models.PositiveBigIntegerField(
+        default=0, verbose_name="سن کاربران", blank=True, null=True
     )
     created = models.DateTimeField("تاریخ ایجاد", auto_now_add=True)
     updated = models.DateTimeField("آخرین بروزرسانی", auto_now=True)

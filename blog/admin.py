@@ -24,7 +24,6 @@ class PostAdmin(admin.ModelAdmin):
 
 @admin.register(Account)
 class AccountAdmin(admin.ModelAdmin):
-    # نمایش فیلدهای مختلف مدل در صفحه‌ی لیست
     list_display = (
         "user",
         "first_name",
@@ -33,17 +32,12 @@ class AccountAdmin(admin.ModelAdmin):
         "phone",
         "gender",
         "address",
+        "age",
         "created",
         "updated",
     )
-
-    # فیلدهایی که می‌توانید در جستجو استفاده کنید
     search_fields = ("user__username", "first_name", "last_name", "email", "phone")
-
-    # اضافه کردن فیلدهایی که می‌توان در صفحه ویرایش مدل مشاهده و ویرایش کرد
     list_filter = ("gender", "created", "updated")
-
-    # افزودن امکان ویرایش مدل در صفحه‌ی جزئیات
     fieldsets = (
         (
             None,
@@ -57,6 +51,7 @@ class AccountAdmin(admin.ModelAdmin):
                     "address",
                     "gender",
                     "picture",
+                    "age",
                 )
             },
         ),
@@ -68,6 +63,4 @@ class AccountAdmin(admin.ModelAdmin):
             },
         ),
     )
-
-    # فیلدهای قابل ویرایش در صفحه‌ی ویرایش
     readonly_fields = ("created", "updated")

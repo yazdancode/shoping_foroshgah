@@ -6,29 +6,66 @@
   <form method="POST">
     {% csrf_token %}
 
-    <label for="first_name">نام:</label>
-    <input type="text" id="first_name" name="first_name" required
-           value="{% if form.first_name.value %}{{ form.first_name.value }}{% else %}{{ account.user.first_name|default:'' }}{% endif %}">
-    <br>
-    <label for="last_name">نام خانوادگی:</label>
-    <input type="text" id="last_name" name="last_name" required
-           value="{% if form.last_name.value %}{{ form.last_name.value }}{% else %}{{ account.user.last_name|default:'' }}{% endif %}">
-    <br>
-    <label for="phone">شماره تلفن:</label>
-    <input type="text" id="phone" name="phone" readonly value="{{ account.phone|default:'' }}">
-    <br>
+    <div>
+      <label for="first_name">نام:</label>
+      <input type="text" id="first_name" name="first_name"
+             value="{{ form.first_name.value|default:account.user.first_name|default:'' }}">
+    </div>
 
-    <label for="address">آدرس:</label>
-    <input type="text" id="address" name="address" required value="{{ account.address|default:'' }}">
-    <br>
-    <label>جنسیت:</label>
-    <input type="radio"  id="male" name="gender" value="M" {% if account.gender == "M" %}checked{% endif %}>
-    <label for="male">مرد</label>
+    <div>
+      <label for="last_name">نام خانوادگی:</label>
+      <input type="text" id="last_name" name="last_name" required
+             value="{{ form.last_name.value|default:account.user.last_name|default:'' }}">
+    </div>
 
-    <input type="radio" id="female" name="gender" value="F" {% if account.gender == "F" %}checked{% endif %}>
-    <label for="female">زن</label>
-    <br>
+    <div>
+      <label for="age">سن:</label>
+      <input type="number" id="age" name="age" required
+             value="{{ form.age.value|default:account.age|default:'' }}">
+    </div>
 
-    <input type="submit" value="ثبت">
+    <div>
+      <label for="phone">شماره تلفن:</label>
+      <input type="text" id="phone" name="phone"  value="{{ account.phone|default:'' }}">
+    </div>
+
+    <div>
+      <label for="address">آدرس:</label>
+      <input type="text" id="address" name="address" required
+             value="{{ form.address.value|default:account.address|default:'' }}">
+    </div>
+
+    <div>
+      <label>جنسیت:</label>
+      <input type="radio" id="male" name="gender" value="M"
+             {% if form.gender.value|default:account.gender == "M" %}checked{% endif %}>
+      <label for="male">مرد</label>
+
+      <input type="radio" id="female" name="gender" value="F"
+             {% if form.gender.value|default:account.gender == "F" %}checked{% endif %}>
+      <label for="female">زن</label>
+    </div>
+
+    <div>
+      <input type="submit" value="ثبت">
+    </div>
   </form>
+
+  {% if form.errors %}
+    <div style="color: red; margin-top: 10px;">
+      <strong>لطفاً خطاهای زیر را بررسی کنید:</strong>
+      <ul>
+        {% for field in form %}
+          {% for error in field.errors %}
+            <li>{{ field.label }}: {{ error }}</li>
+          {% endfor %}
+        {% endfor %}
+
+        {% if form.non_field_errors %}
+          <li>{{ form.non_field_errors }}</li>
+        {% endif %}
+      </ul>
+    </div>
+  {% endif %}
+
 {% endblock %}
