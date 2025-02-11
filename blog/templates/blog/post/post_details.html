@@ -16,4 +16,12 @@
             </p>
         </div>
     </div>
+
+    <a href="{% url 'share_post' post.id %}" class="post-link">
+        📤 اشتراک‌گذاری پست
+    </a>
+    <br>
+    <a href="{% url 'postlist' %}" class="post-link">
+        🔙 بازگشت به لیست پست‌ها
+    </a>
 {% endblock %}

@@ -5,11 +5,11 @@
 {% block content %}
     <h1>اشتراک‌گذاری پست</h1>
 
-    <p style="color: blue; margin-top: 10px;">
     {% if sent %}
-    پست شما با موفقیت به ��ن‌ها ارسال شد.
+        <p style="color: blue; margin-top: 10px;">
+            پست <strong>{{ post.title|escape }}</strong> شما با موفقیت به <strong>{{ form.cleaned_data.to|escape }}</strong> ارسال شد.
+        </p>
     {% endif %}
-    </p>
 
     <form method="post">
         {% csrf_token %}
@@ -18,6 +18,10 @@
             ارسال
         </button>
     </form>
+
+    <a href="{% url 'post_details' post.slug post.id %}" style="display: inline-block; margin-top: 10px;">
+        بازگشت به لیست پست‌ها
+    </a>
 
     {% if form.errors %}
         <div style="color: red; margin-top: 10px;">
