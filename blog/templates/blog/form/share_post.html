@@ -1,0 +1,38 @@
+{% extends 'parent/base.html' %}
+
+{% block title %} اشتراک‌گذاری پست {% endblock %}
+
+{% block content %}
+    <h1>اشتراک‌گذاری پست</h1>
+
+    <p style="color: blue; margin-top: 10px;">
+    {% if sent %}
+    پست شما با موفقیت به ��ن‌ها ارسال شد.
+    {% endif %}
+    </p>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" style="background-color: #007bff; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer;">
+            ارسال
+        </button>
+    </form>
+
+    {% if form.errors %}
+        <div style="color: red; margin-top: 10px;">
+            <strong>لطفاً خطاهای زیر را بررسی کنید:</strong>
+            <ul>
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <li>{{ field.label }}: {{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+
+                {% if form.non_field_errors %}
+                    <li>{{ form.non_field_errors }}</li>
+                {% endif %}
+            </ul>
+        </div>
+    {% endif %}
+{% endblock %}

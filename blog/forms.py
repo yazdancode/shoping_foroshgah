@@ -86,3 +86,39 @@ class AccountForm(forms.Form):
             if not phone.startswith("09"):
                 raise forms.ValidationError("شماره تلفن باید با 09 شروع شود.")
         return phone
+
+
+class ShareForm(forms.Form):
+    message = forms.CharField(
+        widget=forms.Textarea(
+            attrs={"placeholder": "پیام خود را وارد کنید...", "rows": 5, "cols": 40}
+        ),
+        required=True,
+        label="پیام",
+    )
+
+    full_name = forms.CharField(
+        max_length=25,
+        required=True,
+        label="نام",
+        widget=forms.TextInput(attrs={"placeholder": "نام خود را وارد کنید"}),
+    )
+
+    to = forms.EmailField(
+        required=True,
+        label="ایمیل",
+        widget=forms.EmailInput(attrs={"placeholder": "ایمیل خود را وارد کنید"}),
+    )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        full_name = cleaned_data.get("full_name")
+        subject = cleaned_data.get("subject")
+
+        if full_name and len(full_name) < 3:
+            self.add_error("full_name", "نام باید حداقل ۳ کاراکتر باشد.")
+
+        if subject and len(subject) < 5:
+            self.add_error("subject", "موضوع باید حداقل ۵ کاراکتر باشد.")
+
+        return cleaned_data

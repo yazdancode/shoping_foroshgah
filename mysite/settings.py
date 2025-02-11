@@ -1,6 +1,8 @@
 import os
 from pathlib import Path
 
+from decouple import config
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-qk2tt$+nog3#e2))%2r*dp$tmu=-f)!#wn8zftkftdzr=+627a"
 DEBUG = True
@@ -98,6 +100,6 @@ EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = "yshabanei@gmail.com"
-EMAIL_HOST_PASSWORD = "9811412135aass"
+EMAIL_HOST_USER = config("email")
+EMAIL_HOST_PASSWORD = config("password")
 # ---------------------------------------------

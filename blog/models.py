@@ -52,7 +52,7 @@ class Post(models.Model):
         """برگرداندن لینک جزئیات پست"""
         return reverse(
             "post_details",
-            args=[self.publish.year, self.publish.month, self.publish.day, self.slug],
+            kwargs={"slug": self.slug, "pk": self.id},
         )
 
     def jalali_publish(self):

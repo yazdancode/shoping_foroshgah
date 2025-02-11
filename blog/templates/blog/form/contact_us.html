@@ -1,0 +1,66 @@
+{% extends 'parent/base.html' %}
+
+{% block title %}تماس با ما{% endblock %}
+
+{% block content %}
+<h1>صفحه تماس با ما</h1>
+{% if sent %}
+    <p>
+    پیام شما با موفقیت ارسال شد.
+    </p>
+{% endif %}
+
+<form method="post">
+    {% csrf_token %}
+
+    <div>
+        <label for="full_name">نام و نام خانوادگی:</label>
+        <input type="text" id="full_name" name="full_name" maxlength="50" required placeholder="نام و نام خانوادگی خود را وارد کنید">
+    </div>
+    <div>
+        <label for="email">ایمیل:</label>
+        <input type="email" id="email" name="email" required placeholder="ایمیل خود را وارد کنید">
+    </div>
+    <div>
+        <label for="phone">شماره تلفن:</label>
+        <input type="tel" id="phone" name="phone" maxlength="11" minlength="11" required placeholder="شماره تلفن خود را وارد کنید" autocomplete="off">
+    </div>
+    <div>
+        <label for="subject">موضوع:</label>
+        <select id="subject" name="subject" required>
+            <option value="" disabled selected>موضوع پیام را انتخاب کنید</option>
+            <option value="support">پشتیبانی</option>
+            <option value="complaint">شکایت</option>
+            <option value="suggestion">پیشنهاد</option>
+            <option value="general">سایر</option>
+        </select>
+    </div>
+    <div>
+        <label for="message">پیام:</label>
+        <textarea id="message" name="message" placeholder="پیام خود را وارد کنید"></textarea>
+    </div>
+
+    <div>
+        <button type="submit">ارسال پیام</button>
+    </div>
+
+</form>
+
+{% if form.errors %}
+    <div class="error-message" style="color: red; margin-top: 10px;">
+      <strong>لطفاً خطاهای زیر را بررسی کنید:</strong>
+      <ul>
+        {% for field in form %}
+          {% for error in field.errors %}
+            <li>{{ field.label }}: {{ error }}</li>
+          {% endfor %}
+        {% endfor %}
+
+        {% if form.non_field_errors %}
+          <li>{{ form.non_field_errors }}</li>
+        {% endif %}
+      </ul>
+    </div>
+{% endif %}
+
+{% endblock %}

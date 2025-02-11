@@ -1,7 +1,9 @@
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic import ListView
-from blog.forms import AccountForm
+
+from blog.forms import AccountForm, ShareForm
 from blog.models import Account, Post
+from django.core.mail import send_mail
 
 
 def index(request):
@@ -9,26 +11,20 @@ def index(request):
 
 
 class PostListView(ListView):
-    queryset = Post.published.all()  # ✅ حالا از PublishedManager استفاده می‌کنیم
+    queryset = Post.published.all()
     context_object_name = "posts"
     paginate_by = 2
     template_name = "blog/post/postlist.html"
 
 
-def post_details(request, year, month, day, post):
-    post = get_object_or_404(
-        Post.published,  # ✅ فقط از پست‌های منتشر شده دریافت می‌کنیم
-        publish__year=year,
-        publish__month=month,
-        publish__day=day,
-        slug=post,
-    )
+def post_details(request, slug, pk):
+    post = get_object_or_404(Post, status="published", slug=slug, id=pk)
     return render(request, "blog/post/post_details.html", {"post": post})
 
 
 def user_account(request):
     user = request.user
-    account, created = Account.objects.get_or_create(user=user)  # ✅ جلوگیری از خطای DoesNotExist
+    account, created = Account.objects.get_or_create(user=user)
 
     if request.method == "POST":
         form = AccountForm(request.POST)
@@ -43,14 +39,48 @@ def user_account(request):
             account.save()
             return redirect("index")
     else:
-        # ✅ مقداردهی اولیه فرم با اطلاعات حساب کاربر
-        form = AccountForm(initial={
-            "first_name": user.first_name,
-            "last_name": user.last_name,
-            "gender": account.gender,
-            "address": account.address,
-            "age": account.age,
-            "phone": account.phone,
-        })
+        form = AccountForm(
+            initial={
+                "first_name": user.first_name,
+                "last_name": user.last_name,
+                "gender": account.gender,
+                "address": account.address,
+                "age": account.age,
+                "phone": account.phone,
+            }
+        )
 
-    return render(request, "blog/post/user_account.html", {"form": form, "account": account})
+    return render(
+        request, "blog/form/user_account.html", {"form": form, "account": account}
+    )
+
+
+def share_post(request, post_id):
+    post = get_object_or_404(Post, status="published", id=post_id)
+    sent = False
+    if request.method == "POST":
+        form = ShareForm(request.POST)
+        if form.is_valid():
+            cd = form.cleaned_data
+            full_name = cd["full_name"]
+            post_url = request.build_absolute_uri(post.get_absolute_url())
+            subject = "{} شما را به خواندن {} دعوت کرده است".format(
+                full_name, post.title
+            )
+            to = cd["to"]
+            message = cd["message"]
+
+            msg = '{} شما را به خواندن پست "{}" در آدرس زیر دعوت کرده است:\n\n{}\n\n{}'.format(
+                full_name, post.title, message, post_url
+            )
+
+            send_mail(subject, msg, "yshabanei@gmail.com", [to], fail_silently=False)
+
+            sent = True
+            form = ShareForm()
+    else:
+        form = ShareForm()
+
+    return render(
+        request, "blog/form/share_post.html", {"form": form, "sent": sent, "post": post}
+    )
