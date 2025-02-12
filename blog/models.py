@@ -22,7 +22,9 @@ class Post(models.Model):
     )
 
     title = models.CharField("عنوان", max_length=250)
-    slug = models.SlugField("اسلاگ", max_length=250, unique_for_date="publish")
+    slug = models.SlugField(
+        "اسلاگ", max_length=250, unique=True
+    )  # Ensure global uniqueness
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -37,8 +39,8 @@ class Post(models.Model):
         "وضعیت", max_length=15, choices=STATUS_CHOICES, default="draft", db_index=True
     )
 
-    objects = models.Manager()  # مدیر پیش‌فرض
-    published = PublishedManager()  # مدیر سفارشی برای پست‌های منتشر شده
+    objects = models.Manager()
+    published = PublishedManager()
 
     class Meta:
         ordering = ("-publish",)
@@ -110,4 +112,26 @@ class Account(models.Model):
         verbose_name_plural = "حساب‌های کاربری"
 
     def __str__(self):
-        return self.user.first_name + " " + self.user.last_name
+        return self.user.first_name + " " + self.user.last_namet_name
+
+
+class Comment(models.Model):
+    post = models.ForeignKey(
+        Post, on_delete=models.CASCADE, related_name="comments", verbose_name="پست"
+    )
+    name = models.CharField(max_length=100, verbose_name="نام")
+    body = models.TextField(verbose_name="بدنه")
+    publish = models.DateTimeField(
+        "تاریخ فعال سازی", default=persian_now, db_index=True
+    )
+    created = models.DateTimeField(verbose_name="تاریخ ایجاد", auto_now_add=True)
+    updated = models.DateTimeField(verbose_name="آخرین به روز رسانی", auto_now=True)
+    active = models.BooleanField(default=False, verbose_name="فعال")
+
+    def __str__(self):
+        return "نظر {} در مورد {}".format(self.name, self.post)
+
+    class Meta:
+        ordering = ("created",)
+        verbose_name = "نظر"
+        verbose_name_plural = "نظرات"

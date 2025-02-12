@@ -24,4 +24,44 @@
     <a href="{% url 'postlist' %}" class="post-link">
         🔙 بازگشت به لیست پست‌ها
     </a>
+
+    <div class="comments-section">
+        {% with comments.count as count %}
+            <p><strong>نظرات:</strong> {{ count }} نظر</p>
+            <ul>
+                {% for comment in comments %}
+                    <li><strong>{{ forloop.counter }}:</strong> {{ comment.name }}</li>
+                    <li>{{ comment.body }}</li>
+                {% empty %}
+                    <p>هنوز هیچ نظری ارسال نشده است.</p>
+                {% endfor %}
+            </ul>
+        {% endwith %}
+        {% if new_comment %}
+            <p>نظر شما با موفقیت ارسال شد.</p>
+        {% endif %}
+
+        <h2>افزودن نظر جدید</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ comment_form.as_p }}
+            <button type="submit">ارسال نظر</button>
+        </form>
+    </div>
+
+    {% if form.errors %}
+    <div class="error-message" style="color: red; margin-top: 10px;">
+        <strong>لطفاً خطاهای زیر را بررسی کنید:</strong>
+        <ul>
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <li>{{ field.label }}: {{ error }}</li>
+                {% endfor %}
+            {% endfor %}
+            {% if form.non_field_errors %}
+                <li>{{ form.non_field_errors }}</li>
+            {% endif %}
+        </ul>
+    </div>
+    {% endif %}
 {% endblock %}

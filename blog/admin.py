@@ -1,7 +1,7 @@
 from django.contrib import admin
 from jalali_date import datetime2jalali
 
-from blog.models import Account, Post
+from blog.models import Account, Post, Comment
 
 
 @admin.register(Post)
@@ -64,3 +64,12 @@ class AccountAdmin(admin.ModelAdmin):
         ),
     )
     readonly_fields = ("created", "updated")
+
+
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ("name", "post", "body", "active", "publish")
+    list_filter = ("created", "updated", "post")
+    list_editable = ("active",)
+    search_fields = ("name", "body", "active", "publish")
+    ordering = ("-created",)

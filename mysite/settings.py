@@ -20,7 +20,6 @@ INSTALLED_APPS = [
     "blog.apps.BlogConfig",
     "django_jalali",
     "grappelli",
-    # "jazzmin",
 ]
 
 MIDDLEWARE = [

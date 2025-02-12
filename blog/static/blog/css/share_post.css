@@ -1,0 +1,9 @@
+.share_post{
+  direction: rtl;
+  max-width: 500px;
+  margin: auto;
+}
+.message{
+  color: #007ffff;
+}
+

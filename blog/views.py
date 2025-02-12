@@ -1,9 +1,9 @@
+from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic import ListView
 
-from blog.forms import AccountForm, ShareForm
-from blog.models import Account, Post
-from django.core.mail import send_mail
+from blog.forms import AccountForm, ShareForm, CommentForm
+from blog.models import Account, Post, Comment
 
 
 def index(request):
@@ -19,7 +19,23 @@ class PostListView(ListView):
 
 def post_details(request, slug, pk):
     post = get_object_or_404(Post, status="published", slug=slug, id=pk)
-    return render(request, "blog/post/post_details.html", {"post": post})
+    comments = post.comments.filter(active=True)
+    new_comment = None
+    if request.method == "POST":
+        comment_form = CommentForm(request.POST)
+        if comment_form.is_valid():
+            new_comment = comment_form.save(commit=False)
+            new_comment.post = post
+            new_comment.save()
+    else:
+        comment_form = CommentForm()
+    context = {
+        "post": post,
+        "new_comment": new_comment,
+        "comments": comments,
+        "comment_form": comment_form,
+    }
+    return render(request, "blog/post/post_details.html", context)
 
 
 def user_account(request):

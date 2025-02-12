@@ -1,5 +1,6 @@
 from django import forms
 from django.core.validators import RegexValidator
+from blog.models import Post, Comment
 
 
 class AccountForm(forms.Form):
@@ -91,7 +92,12 @@ class AccountForm(forms.Form):
 class ShareForm(forms.Form):
     message = forms.CharField(
         widget=forms.Textarea(
-            attrs={"placeholder": "پیام خود را وارد کنید...", "rows": 5, "cols": 40}
+            attrs={
+                "placeholder": "پیام خود را وارد کنید...",
+                "rows": 5,
+                "cols": 40,
+                "class": "message",
+            }
         ),
         required=True,
         label="پیام",
@@ -113,12 +119,26 @@ class ShareForm(forms.Form):
     def clean(self):
         cleaned_data = super().clean()
         full_name = cleaned_data.get("full_name")
-        subject = cleaned_data.get("subject")
 
         if full_name and len(full_name) < 3:
             self.add_error("full_name", "نام باید حداقل ۳ کاراکتر باشد.")
 
-        if subject and len(subject) < 5:
-            self.add_error("subject", "موضوع باید حداقل ۵ کاراکتر باشد.")
-
         return cleaned_data
+
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ["name", "body"]
+
+    def clean_name(self):
+        name = self.cleaned_data.get("name")
+        if not name.strip():
+            raise ValidationError("نام نمی‌تواند خالی باشد.")
+        return name.strip()
+
+    def clean_body(self):
+        body = self.cleaned_data.get("body")
+        if not body.strip():
+            raise ValidationError("متن نظر نمی‌تواند خالی باشد.")
+        return body.strip()
