@@ -1,10 +1,11 @@
 from django.urls import path
 
-from blog.views import PostListView, index, post_details, share_post, user_account
+from blog.views import index, post_details, share_post, user_account, postlist
 
 urlpatterns = [
     path("", index, name="index"),
-    path("postlist/", PostListView.as_view(), name="postlist"),
+    path("postlist/", postlist, name="postlist"),
+    path("postlist/<slug:tag_slug>/", postlist, name="postlist_tag"),
     path(
         "post_details/<slug:slug>/<int:pk>/",
         post_details,

@@ -20,6 +20,7 @@ INSTALLED_APPS = [
     "blog.apps.BlogConfig",
     "django_jalali",
     "grappelli",
+    "taggit",  # for tag
 ]
 
 MIDDLEWARE = [

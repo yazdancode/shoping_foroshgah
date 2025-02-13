@@ -1,20 +1,37 @@
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic import ListView
-
+from django.core.paginator import Paginator
+from django.core.paginator import PageNotAnInteger, EmptyPage
 from blog.forms import AccountForm, ShareForm, CommentForm
 from blog.models import Account, Post, Comment
+from taggit.models import Tag
 
 
 def index(request):
     return render(request, "blog/index.html", {})
 
 
-class PostListView(ListView):
-    queryset = Post.published.all()
-    context_object_name = "posts"
-    paginate_by = 2
-    template_name = "blog/post/postlist.html"
+def postlist(request, tag_slug=None):
+    posts = Post.published.all()
+    tag = None
+
+    if tag_slug:
+        tag = get_object_or_404(Tag, slug=tag_slug)
+        posts = posts.filter(tags=tag)
+
+    paginator = Paginator(posts, 4)
+    page = request.GET.get("page")
+    posts = paginator.get_page(page)
+
+    return render(request, "blog/post/postlist.html", {"posts": posts, "tag": tag})
+
+
+# class PostListView(ListView):
+#     queryset = Post.published.all()
+#     context_object_name = "posts"
+#     paginate_by = 4
+#     template_name = "blog/post/postlist.html"
 
 
 def post_details(request, slug, pk):

@@ -6,16 +6,27 @@
     <div class="container">
         <h1 class="page-title">لیست پست‌ها</h1>
 
+        {% if tag %}
+            <p>پست‌ها بر اساس تگ <strong>{{ tag.name }}</strong> فیلتر شده‌اند.</p>
+        {% endif %}
+
         {% for post in posts %}
             <div class="post-item">
                 <a href="{{ post.get_absolute_url }}" class="post-link">
                     <h2 class="post-title">{{ post.title }}</h2>
                     <p class="post-author">نویسنده: {{ post.author }}</p>
                 </a>
+                <p>برچسب‌ها:
+                    {% for tag in post.tags.all %}
+                        <a href="{% url 'postlist_tag' tag.slug %}" class="post-tag">{{ tag.name }}</a>
+                        {% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                </p>
             </div>
         {% empty %}
             <p>هیچ پستی موجود نیست.</p>
         {% endfor %}
-        {% include 'blog/partials/pagination.html' with posts=page_obj %}
+
+        {% include 'blog/partials/pagination.html' with posts=posts %}
     </div>
 {% endblock %}
