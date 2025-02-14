@@ -24,7 +24,7 @@ def postlist(request, tag_slug=None):
     paginator = Paginator(posts, 4)
     page = request.GET.get("page")
     posts = paginator.get_page(page)
-    return render(request, "blog/post/postlist.html", {"posts": posts, "tag": tag})[:2]
+    return render(request, "blog/post/postlist.html", {"posts": posts, "tag": tag})
 
 
 # class PostListView(ListView):
@@ -51,7 +51,7 @@ def post_details(request, slug, pk):
     similar_posts = Post.published.filter(tags__in=ids).exclude(id=post.id)
     similar_posts = similar_posts.annotate(s_count=Count("tags")).order_by(
         "-s_count", "-publish"
-    )
+    )[:2]
 
     context = {
         "post": post,
