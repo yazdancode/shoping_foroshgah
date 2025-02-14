@@ -1,7 +1,7 @@
 from django.contrib import admin
 from jalali_date import datetime2jalali
 
-from blog.models import Account, Post, Comment
+from blog.models import Account, Comment, Post
 
 
 @admin.register(Post)

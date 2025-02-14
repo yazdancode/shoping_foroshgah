@@ -1,11 +1,12 @@
 from django.core.mail import send_mail
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.db.models import Count
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic import ListView
-from django.core.paginator import Paginator
-from django.core.paginator import PageNotAnInteger, EmptyPage
-from blog.forms import AccountForm, ShareForm, CommentForm
-from blog.models import Account, Post, Comment
 from taggit.models import Tag
+
+from blog.forms import AccountForm, CommentForm, ShareForm
+from blog.models import Account, Comment, Post
 
 
 def index(request):
@@ -23,8 +24,7 @@ def postlist(request, tag_slug=None):
     paginator = Paginator(posts, 4)
     page = request.GET.get("page")
     posts = paginator.get_page(page)
-
-    return render(request, "blog/post/postlist.html", {"posts": posts, "tag": tag})
+    return render(request, "blog/post/postlist.html", {"posts": posts, "tag": tag})[:2]
 
 
 # class PostListView(ListView):
@@ -38,6 +38,7 @@ def post_details(request, slug, pk):
     post = get_object_or_404(Post, status="published", slug=slug, id=pk)
     comments = post.comments.filter(active=True)
     new_comment = None
+
     if request.method == "POST":
         comment_form = CommentForm(request.POST)
         if comment_form.is_valid():
@@ -46,11 +47,18 @@ def post_details(request, slug, pk):
             new_comment.save()
     else:
         comment_form = CommentForm()
+    ids = post.tags.values_list("id", flat=True)
+    similar_posts = Post.published.filter(tags__in=ids).exclude(id=post.id)
+    similar_posts = similar_posts.annotate(s_count=Count("tags")).order_by(
+        "-s_count", "-publish"
+    )
+
     context = {
         "post": post,
         "new_comment": new_comment,
         "comments": comments,
         "comment_form": comment_form,
+        "similar_posts": similar_posts,
     }
     return render(request, "blog/post/post_details.html", context)
 

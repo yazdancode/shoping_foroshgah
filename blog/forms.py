@@ -1,6 +1,7 @@
 from django import forms
 from django.core.validators import RegexValidator
-from blog.models import Post, Comment
+
+from blog.models import Comment, Post
 
 
 class AccountForm(forms.Form):

@@ -1,6 +1,6 @@
 from django.urls import path
 
-from blog.views import index, post_details, share_post, user_account, postlist
+from blog.views import index, post_details, postlist, share_post, user_account
 
 urlpatterns = [
     path("", index, name="index"),
