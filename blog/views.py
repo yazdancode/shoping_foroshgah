@@ -49,7 +49,7 @@ def post_details(request, slug, pk):
         comment_form = CommentForm()
     ids = post.tags.values_list("id", flat=True)
     similar_posts = Post.published.filter(tags__in=ids).exclude(id=post.id)
-    similar_posts = similar_posts.annotate(s_count=Count("tags")).order_by(
+    similar_posts = similar_posts.annotate(s_count=Count("title")).order_by(
         "-s_count", "-publish"
     )[:2]
 
