@@ -114,7 +114,7 @@ class Account(models.Model):
         verbose_name_plural = "حساب‌های کاربری"
 
     def __str__(self):
-        return self.user.first_name + " " + self.user.last_namet_name
+        return self.user.first_name + " " + self.user.last_name
 
 
 class Comment(models.Model):
