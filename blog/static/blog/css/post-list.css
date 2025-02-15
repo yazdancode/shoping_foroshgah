@@ -1,53 +1,97 @@
+@import url('https://cdn.jsdelivr.net/npm/vazir-font@latest/dist/font-face.css');
+
+:root {
+    --primary-color: #007bff;
+    --primary-hover: #0056b3;
+    --background-light: #f8f9fa;
+    --text-color: #333;
+    --border-color: #ddd;
+}
+
+body {
+    font-family: 'Vazir', sans-serif;
+    background-color: var(--background-light);
+}
+
 .container {
     max-width: 900px;
-    margin: 40px auto;
-    font-family: 'Tahoma', sans-serif;
-    direction: rtl;
-    text-align: right;
+    margin: 30px auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
 .page-title {
-    font-size: 32px;
+    text-align: center;
+    font-size: 26px;
     font-weight: bold;
-    color: #333;
-    margin-bottom: 30px;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--primary-color);
 }
 
 .post-item {
-    background: #f9f9f9;
+    background: #ffffff;
+    padding: 15px;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
-    padding: 20px;
-    transition: 0.3s;
+    margin-bottom: 15px;
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease-in-out;
 }
 
 .post-item:hover {
-    background-color: #f1f1f1;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    transform: translateY(-5px);
+    background: #eef;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
 .post-link {
     text-decoration: none;
-    color: #333;
+    color: var(--text-color);
+    display: block;
 }
 
 .post-title {
-    font-size: 24px;
-    color: #007bff;
-    margin-bottom: 10px;
-    transition: 0.2s;
-}
-
-.post-title:hover {
-    text-decoration: underline;
+    font-size: 22px;
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-bottom: 5px;
 }
 
 .post-author {
-    font-size: 16px;
-    color: #555;
+    font-size: 14px;
+    color: #6c757d;
 }
 
+.post-tag {
+    display: inline-block;
+    padding: 4px 10px;
+    margin: 3px;
+    font-size: 12px;
+    border-radius: 12px;
+    background: var(--primary-color);
+    color: white;
+    text-decoration: none;
+}
+
+.post-tag:hover {
+    background: var(--primary-hover);
+}
+
+/* استایل‌های پیام خالی */
+.empty-message {
+    text-align: center;
+    font-size: 18px;
+    color: #dc3545;
+    padding: 20px;
+    background: #fff3cd;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+/* استایل‌های صفحه‌بندی */
 .pagination {
     display: flex;
     justify-content: center;
@@ -59,18 +103,15 @@
     margin: 0 5px;
     text-decoration: none;
     border-radius: 5px;
-    background-color: #007bff;
+    background-color: var(--primary-color);
     color: #fff;
     font-size: 16px;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s ease-in-out;
 }
 
-.pagination .page-link:hover {
-    background-color: #0056b3;
-}
-
+.pagination .page-link:hover,
 .pagination .active .page-link {
-    background-color: #0056b3;
+    background-color: var(--primary-hover);
 }
 
 .pagination .disabled .page-link {

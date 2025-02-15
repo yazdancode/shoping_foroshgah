@@ -1,16 +1,16 @@
 <div style="text-align: center; margin-top: 20px;">
     {% if posts.has_previous %}
-        <a href="?page=1" class="btn btn-primary">⏮ صفحه اول</a>
-        <a href="?page={{ posts.previous_page_number }}" class="btn btn-secondary">◀ صفحه قبل</a>
+        <a href="?page=1" class="btn btn-outline-primary btn-sm">⏮ صفحه اول</a>
+        <a href="?page={{ posts.previous_page_number }}" class="btn btn-outline-secondary btn-sm">◀ صفحه قبل</a>
     {% endif %}
 
     <!-- ✅ نمایش صحیح شماره صفحه -->
     {% if posts.paginator.num_pages > 1 %}
-        <span style="margin: 0 15px;">صفحه {{ posts.number }} از {{ posts.paginator.num_pages }}</span>
+        <span style="margin: 0 15px; font-size: 16px; font-weight: bold;">صفحه {{ posts.number }} از {{ posts.paginator.num_pages }}</span>
     {% endif %}
 
     {% if posts.has_next %}
-        <a href="?page={{ posts.next_page_number }}" class="btn btn-secondary">صفحه بعد ▶</a>
-        <a href="?page={{ posts.paginator.num_pages }}" class="btn btn-primary">⏭ صفحه آخر</a>
+        <a href="?page={{ posts.next_page_number }}" class="btn btn-outline-secondary btn-sm">صفحه بعد ▶</a>
+        <a href="?page={{ posts.paginator.num_pages }}" class="btn btn-outline-primary btn-sm">⏭ صفحه آخر</a>
     {% endif %}
 </div>

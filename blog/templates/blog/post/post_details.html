@@ -3,92 +3,89 @@
 {% block title %} {{ post.title }} {% endblock %}
 
 {% block content %}
-    <div class="container">
-        <div class="post-card">
-            <h2 class="post-title"> {{ post.title }} </h2>
-            <p class="post-author">✍️ نویسنده: {{ post.author }} </p>
-            <p class="post-body"> {{ post.body }} </p>
-            <p class="published-date">
+    <div class="container mt-4">
+        <div class="card shadow-lg p-4 mb-4 bg-white rounded">
+            <h2 class="text-primary">{{ post.title }}</h2>
+            <p class="text-muted">✍️ نویسنده: <strong>{{ post.author }}</strong></p>
+            <p class="lead">{{ post.body }}</p>
+            <p class="text-secondary">
                 🗓 تاریخ انتشار:
-                <span id="published-date" title="Gregorian Date: {{ post.publish|date:'Y-m-d H:i' }}">
+                <span title="Gregorian Date: {{ post.publish|date:'Y-m-d H:i' }}">
                     {{ post.jalali_publish|default:"تاریخ نامشخص" }}
                 </span>
             </p>
         </div>
-    </div>
 
-    <a href="{% url 'share_post' post.id %}" class="post-link">
-        📤 اشتراک‌گذاری پست
-    </a>
-    <br>
-    <a href="{% url 'postlist' %}" class="post-link">
-        🔙 بازگشت به لیست پست‌ها
-    </a>
+        <div class="d-flex gap-3 mb-4">
+            <a href="{% url 'share_post' post.id %}" class="btn btn-outline-success">📤 اشتراک‌گذاری</a>
+            <a href="{% url 'postlist' %}" class="btn btn-outline-primary">🔙 بازگشت</a>
+        </div>
 
-    <div class="comments-section">
-        {% with comments.count as count %}
-            <p><strong>نظرات:</strong> {{ count }} نظر</p>
-            {% if comments %}
-                <ul class="comments-list">
-                    {% for comment in comments %}
-                        <li>
-                            <strong>{{ forloop.counter }}. {{ comment.name|default:"کاربر ناشناس" }}</strong>
-                            <p>{{ comment.body }}</p>
-                        </li>
+        <div class="comments-section card p-3 shadow-sm">
+            {% with comments.count as count %}
+                <h4>نظرات ({{ count }})</h4>
+                {% if comments %}
+                    <ul class="list-group list-group-flush">
+                        {% for comment in comments %}
+                            <li class="list-group-item">
+                                <strong>{{ forloop.counter }}. {{ comment.name|default:"کاربر ناشناس" }}</strong>
+                                <p class="text-muted">{{ comment.body }}</p>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-danger">هنوز نظری ثبت نشده است.</p>
+                {% endif %}
+            {% endwith %}
+
+            {% if new_comment %}
+                <div class="alert alert-success mt-2">نظر شما با موفقیت ارسال شد.</div>
+            {% endif %}
+
+            <h5 class="mt-4">افزودن نظر جدید</h5>
+            <form method="post" class="mt-3">
+                {% csrf_token %}
+                {{ comment_form.as_p }}
+                <button type="submit" class="btn btn-primary">ارسال نظر</button>
+            </form>
+        </div>
+
+        {% if form.errors %}
+            <div class="alert alert-danger mt-3">
+                <strong>خطاهای زیر را بررسی کنید:</strong>
+                <ul>
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <li>{{ field.label }}: {{ error }}</li>
+                        {% endfor %}
+                    {% endfor %}
+                    {% if form.non_field_errors %}
+                        <li>{{ form.non_field_errors }}</li>
+                    {% endif %}
+                </ul>
+            </div>
+        {% endif %}
+
+        <div class="tags-section mt-4">
+            <strong>برچسب‌ها:</strong>
+            {% for tag in post.tags.all reversed %}
+                <span class="badge bg-secondary">{{ tag.name }}</span>
+            {% empty %}
+                <span class="text-muted">برچسبی وجود ندارد</span>
+            {% endfor %}
+        </div>
+
+        <div class="similar-posts mt-4">
+            <h4>پست‌های مشابه:</h4>
+            {% if similar_posts %}
+                <ul class="list-unstyled">
+                    {% for similar in similar_posts %}
+                        <li><a href="{{ similar.get_absolute_url }}" class="text-decoration-none">📌 {{ similar.title }}</a></li>
                     {% endfor %}
                 </ul>
             {% else %}
-                <p>هنوز هیچ نظری ارسال نشده است.</p>
+                <p class="text-warning">پست مشابهی یافت نشد.</p>
             {% endif %}
-        {% endwith %}
-
-        {% if new_comment %}
-            <p style="color: green;">نظر شما با موفقیت ارسال شد.</p>
-        {% endif %}
-
-        <h2>افزودن نظر جدید</h2>
-        <form method="post">
-            {% csrf_token %}
-            {{ comment_form.as_p }}
-            <button type="submit" class="btn btn-primary">ارسال نظر</button>
-        </form>
-    </div>
-
-    {% if form.errors %}
-        <div class="error-message" style="color: red; margin-top: 10px;">
-            <strong>لطفاً خطاهای زیر را بررسی کنید:</strong>
-            <ul>
-                {% for field in form %}
-                    {% for error in field.errors %}
-                        <li>{{ field.label }}: {{ error }}</li>
-                    {% endfor %}
-                {% endfor %}
-                {% if form.non_field_errors %}
-                    <li>{{ form.non_field_errors }}</li>
-                {% endif %}
-            </ul>
         </div>
-    {% endif %}
-
-    <div class="tags-section">
-        <strong>برچسب‌ها:</strong>
-        {% for tag in post.tags.all %}
-            <span class="tag">{{ tag.name }}</span>{% if not forloop.last %}, {% endif %}
-        {% empty %}
-            <span>برچسبی وجود ندارد</span>
-        {% endfor %}
-    </div>
-
-    <div class="similar-posts">
-        <h3>پست‌های مشابه:</h3>
-        {% if similar_posts %}
-            <ul>
-                {% for similar in similar_posts %}
-                    <li><a href="{{ similar.get_absolute_url }}">{{ similar.title }}</a></li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>پست مشابهی یافت نشد.</p>
-        {% endif %}
     </div>
 {% endblock %}

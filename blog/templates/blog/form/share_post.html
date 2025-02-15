@@ -3,45 +3,57 @@
 {% block title %} اشتراک‌گذاری پست {% endblock %}
 
 {% block content %}
-    <h1>اشتراک‌گذاری پست</h1>
+    <div class="container">
+        <h1 class="text-center">اشتراک‌گذاری پست</h1>
 
-    {% if sent %}
-        <p style="color: #0c5460; background-color: #d1ecf1; border: 1px solid #bee5eb; padding: 10px; border-radius: 5px; margin-top: 10px;">
-            پست <strong>{{ post.title|escape }}</strong> شما با موفقیت به <strong>{{ form.cleaned_data.to|escape }}</strong> ارسال شد.
-        </p>
-    {% endif %}
+        {% if sent %}
+            <div class="alert alert-info" role="alert">
+                پست <strong>{{ post.title|escape }}</strong> شما با موفقیت به <strong>{{ form.cleaned_data.to|escape }}</strong> ارسال شد.
+            </div>
+        {% endif %}
 
-    <div class="share-post">
-        <form method="post" style="display: flex; flex-direction: column; gap: 10px;">
-            {% csrf_token %}
-            {% for field in form %}
-                <div class="test-class">
-                    {{ field.label }}
-                </div>
-                <div class="">
-                    {{ field }}
-                </div>
-            {% endfor %}
-            <button type="submit" style="background-color: #007bff; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">ارسال</button>
-        </form>
-
-        <a href="{% url 'post_details' post.slug post.id %}" style="display: inline-block; margin-top: 10px; text-decoration: none; color: #007bff; font-size: 14px;">بازگشت به لیست پست‌ها</a>
-    </div>
-
-    {% if form.errors %}
-        <div style="color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb; padding: 10px; border-radius: 5px; margin-top: 10px;">
-            <strong>لطفاً خطاهای زیر را بررسی کنید:</strong>
-            <ul style="padding-right: 20px;">
+        <div class="share-post">
+            <form method="post" class="form-container">
+                {% csrf_token %}
                 {% for field in form %}
-                    {% for error in field.errors %}
-                        <li><strong>{{ field.label }}:</strong> {{ error }}</li>
-                    {% endfor %}
+                    <div class="form-group">
+                        <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                        <div class="form-field">
+                            {{ field }}
+                        </div>
+                        {% if field.errors %}
+                            <div class="invalid-feedback">
+                                {% for error in field.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
                 {% endfor %}
 
-                {% if form.non_field_errors %}
-                    <li><strong>خطای کلی:</strong> {{ form.non_field_errors }}</li>
-                {% endif %}
-            </ul>
+                <button type="submit" class="btn btn-primary btn-block">ارسال</button>
+            </form>
+
+            <a href="{% url 'post_details' post.slug post.id %}" class="back-link">بازگشت به لیست پست‌ها</a>
         </div>
-    {% endif %}
+
+        {% if form.errors %}
+            <div class="alert alert-danger" role="alert">
+                <strong>لطفاً خطاهای زیر را بررسی کنید:</strong>
+                <ul>
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+                        {% endfor %}
+                    {% endfor %}
+
+                    {% if form.non_field_errors %}
+                        <li><strong>خطای کلی:</strong> {{ form.non_field_errors }}</li>
+                    {% endif %}
+                </ul>
+            </div>
+        {% endif %}
+    </div>
 {% endblock %}
+
+
