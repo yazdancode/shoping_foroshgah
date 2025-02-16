@@ -1,4 +1,5 @@
 {% extends 'parent/base.html' %}
+{% load blog_tags %}
 
 {% block title %} {{ post.title }} {% endblock %}
 
@@ -18,6 +19,7 @@
 
         <div class="d-flex gap-3 mb-4">
             <a href="{% url 'share_post' post.id %}" class="btn btn-outline-success">📤 اشتراک‌گذاری</a>
+            <br>
             <a href="{% url 'postlist' %}" class="btn btn-outline-primary">🔙 بازگشت</a>
         </div>
 
@@ -68,7 +70,7 @@
 
         <div class="tags-section mt-4">
             <strong>برچسب‌ها:</strong>
-            {% for tag in post.tags.all reversed %}
+            {% for tag in post.tags.all %}
                 <span class="badge bg-secondary">{{ tag.name }}</span>
             {% empty %}
                 <span class="text-muted">برچسبی وجود ندارد</span>
@@ -87,5 +89,22 @@
                 <p class="text-warning">پست مشابهی یافت نشد.</p>
             {% endif %}
         </div>
+        <!-- Latest Posts Section -->
+        <div class="latest-posts">
+        <h4>📌 آخرین پست‌ها</h4>
+        <ul>
+            {% latest_posts 2 as posts %}
+            {% for post in posts %}
+                <li>
+                    <div>
+                        {{ post.title }}
+                    </div>
+                    <div>
+                        {{ post.publish }}
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+</div>
     </div>
 {% endblock %}
