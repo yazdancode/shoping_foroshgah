@@ -16,6 +16,7 @@
             <div class="post-item">
                 <a href="{{ post.get_absolute_url }}" class="post-link">
                     <h2 class="post-title">{{ post.title }}</h2>
+                    <p class="post-title">{{ post.body }}</p>
                     <p class="post-author"><i class="fas fa-user"></i> نویسنده: {{ post.author.get_full_name|default:post.author.username }}</p>
                 </a>
                 <p>برچسب‌ها:

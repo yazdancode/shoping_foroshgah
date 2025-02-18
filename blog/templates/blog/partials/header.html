@@ -1,0 +1,10 @@
+<div class="form-container">
+    <div class="card-header">فرم جستجو</div>
+    <form action="{% url 'search' %}" method="post" class="search-form">
+        {% csrf_token %}
+        <div class="input-container">
+            <input type="text" name="search_input" placeholder="جستجوی خود را وارد کنید" class="search-input" required>
+        </div>
+        <input type="submit" name="submit" value="جستجو" class="search-submit">
+    </form>
+</div>

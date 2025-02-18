@@ -53,18 +53,15 @@ class Post(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        """برگرداندن لینک جزئیات پست"""
         return reverse(
             "post_details",
             kwargs={"slug": self.slug, "pk": self.id},
         )
 
     def jalali_publish(self):
-        """تبدیل تاریخ انتشار به شمسی"""
         return datetime2jalali(self.publish).strftime("%Y/%m/%d - %H:%M")
 
     def jalali_created(self):
-        """تبدیل تاریخ ایجاد به شمسی"""
         return datetime2jalali(self.created).strftime("%Y/%m/%d - %H:%M")
 
     def __repr__(self):

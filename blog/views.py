@@ -1,5 +1,5 @@
 from django.core.mail import send_mail
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Count
 from django.shortcuts import get_object_or_404, redirect, render
 from taggit.models import Tag
@@ -123,4 +123,38 @@ def share_post(request, post_id):
 
     return render(
         request, "blog/form/share_post.html", {"form": form, "sent": sent, "post": post}
+    )
+
+
+def search(request, tag_slug=None):
+    query = (
+        request.POST.get("search_input")
+        if request.method == "POST"
+        else request.GET.get("search_input")
+    )
+    tag = None
+    results = Post.published.all()
+
+    if query:
+        results = results.filter(body__contains=query)
+
+    if tag_slug:
+        try:
+            tag = Tag.objects.get(slug=tag_slug)
+            results = results.filter(tags__in=[tag])
+        except Tag.DoesNotExist:
+            tag = None
+
+    paginator = Paginator(results, 4)
+    page = request.GET.get("page")
+
+    try:
+        posts = paginator.page(page)
+    except PageNotAnInteger:
+        posts = paginator.page(1)
+    except EmptyPage:
+        posts = paginator.page(paginator.num_pages)
+
+    return render(
+        request, "blog/post/postlist.html", {"posts": posts, "tag": tag, "page": page}
     )

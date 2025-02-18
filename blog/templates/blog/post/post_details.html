@@ -8,7 +8,7 @@
         <div class="card shadow-lg p-4 mb-4 bg-white rounded">
             <h2 class="text-primary">{{ post.title }}</h2>
             <p class="text-muted">✍️ نویسنده: <strong>{{ post.author }}</strong></p>
-            <p class="lead">{{ post.body }}</p>
+            <p class="lead">{{ post.body|markdown }}</p>
             <p class="text-secondary">
                 🗓 تاریخ انتشار:
                 <span title="Gregorian Date: {{ post.publish|date:'Y-m-d H:i' }}">

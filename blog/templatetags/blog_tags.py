@@ -1,6 +1,9 @@
 from django import template
 from django.utils import timezone
+from django.template.defaultfilters import upper
 from blog.models import Post
+import markdown
+from django.utils.safestring import mark_safe
 
 register = template.Library()
 
@@ -16,3 +19,11 @@ def number_of_posts(is_today=False):
 @register.simple_tag(name="latest_posts")
 def latest_posts(count=3):
     return Post.published.order_by("-publish")[:count]
+
+
+@register.filter(name="markdown")
+def markdown_format(text):
+    if "script" not in text:
+        return mark_safe(markdown.markdown(text))
+    else:
+        return ""
