@@ -20,7 +20,9 @@ INSTALLED_APPS = [
     "blog.apps.BlogConfig",
     "django_jalali",
     "grappelli",
-    "taggit",  # for tag
+    "taggit",
+    # new search for  postgres
+    "django.contrib.postgres",
 ]
 
 MIDDLEWARE = [

@@ -1,11 +1,11 @@
 from django.core.mail import send_mail
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Count
 from django.shortcuts import get_object_or_404, redirect, render
 from taggit.models import Tag
-
 from blog.forms import AccountForm, CommentForm, ShareForm
 from blog.models import Account, Post
+from django.contrib.postgres.search import SearchVector
 
 
 def index(request):
@@ -128,17 +128,18 @@ def share_post(request, post_id):
 
 def search(request, tag_slug=None):
     query = (
-        request.POST.get("search_input")
-        if request.method == "POST"
+        request.GET.get("search_input")
+        if request.method == "GET"
         else request.GET.get("search_input")
     )
     tag = None
     results = Post.published.all()
 
     if query:
-        results = results.filter(
-            body__contains=query
-        ) | results.filter(title__contains=query)
+        results = Post.published.annotate(search=SearchVector("body", "title")).filter(
+            body__search=query
+        )
+
 
     if tag_slug:
         try:
@@ -160,4 +161,3 @@ def search(request, tag_slug=None):
     return render(
         request, "blog/post/postlist.html", {"posts": posts, "tag": tag, "page": page}
     )
-

@@ -144,3 +144,7 @@ class CommentForm(forms.ModelForm):
         if not body.strip():
             raise ValidationError("متن نظر نمی‌تواند خالی باشد.")
         return body.strip()
+
+
+# class SearchForm(forms.Form):
+#     query = forms.CharField(label='جستجو')

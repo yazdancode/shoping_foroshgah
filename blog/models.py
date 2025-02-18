@@ -23,9 +23,7 @@ class Post(models.Model):
     )
 
     title = models.CharField("عنوان", max_length=250)
-    slug = models.SlugField(
-        "اسلاگ", max_length=250, unique=True
-    )  # Ensure global uniqueness
+    slug = models.SlugField("اسلاگ", max_length=250, unique=True)
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,

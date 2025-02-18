@@ -1,9 +1,10 @@
-from django import template
-from django.utils import timezone
-from django.template.defaultfilters import upper
-from blog.models import Post
 import markdown
+from django import template
+from django.template.defaultfilters import upper
+from django.utils import timezone
 from django.utils.safestring import mark_safe
+
+from blog.models import Post
 
 register = template.Library()
 
