@@ -136,7 +136,9 @@ def search(request, tag_slug=None):
     results = Post.published.all()
 
     if query:
-        results = results.filter(body__contains=query)
+        results = results.filter(
+            body__contains=query
+        ) | results.filter(title__contains=query)
 
     if tag_slug:
         try:
@@ -158,3 +160,4 @@ def search(request, tag_slug=None):
     return render(
         request, "blog/post/postlist.html", {"posts": posts, "tag": tag, "page": page}
     )
+
