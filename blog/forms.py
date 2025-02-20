@@ -146,5 +146,23 @@ class CommentForm(forms.ModelForm):
         return body.strip()
 
 
-# class SearchForm(forms.Form):
-#     query = forms.CharField(label='جستجو')
+class SearchForm(forms.Form):
+    search_input = forms.CharField(
+        label="جستجو",
+        max_length=255,
+        widget=forms.TextInput(attrs={"placeholder": "عبارت مورد نظر را وارد کنید...", "class": "form-control"}),
+        required=False,
+    )
+
+
+class LoginForm(forms.Form):
+    username = forms.CharField(
+        label="نام کاربری",
+        max_length=150,
+        widget=forms.TextInput(attrs={"placeholder": "نام کاربری", "class": "form-control"}),
+    )
+    password = forms.CharField(
+        label="رمز عبور",
+        max_length=16,
+        widget=forms.PasswordInput(attrs={"placeholder": "رمز عبور", "class": "form-control", "autocomplete": "current-password"}),
+    )

@@ -1,10 +1,14 @@
 <div class="form-container">
     <div class="card-header">فرم جستجو</div>
     <form action="{% url 'search' %}" method="get" class="search-form">
-        {% csrf_token %}
         <div class="input-container">
-            <input type="text" name="search_input" placeholder="جستجوی خود را وارد کنید" class="search-input" required>
+            <input type="text" name="search_input" placeholder="جستجوی خود را وارد کنید"
+                   class="search-input" value="{{ request.GET.search_input }}" required>
         </div>
-        <input type="submit" name="submit" value="جستجو" class="search-submit">
+        <input type="submit" value="جستجو" class="search-submit">
     </form>
+
+    {% if request.user.is_authenticated %}
+        <p>{{ request.user.first_name }} سلام</p>
+    {% endif %}
 </div>

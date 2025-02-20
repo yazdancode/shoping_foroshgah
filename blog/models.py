@@ -31,9 +31,16 @@ class Post(models.Model):
         verbose_name="نویسنده",
     )
     body = models.TextField("متن")
+    likes = models.ManyToManyField(
+        User, related_name="like", blank=True, verbose_name="لایک"
+    )
+    dislikes = models.ManyToManyField(
+        User, related_name="dislike", blank=True, verbose_name="دوست نداشتن"
+    )
     publish = models.DateTimeField("تاریخ انتشار", default=persian_now, db_index=True)
     created = models.DateTimeField("تاریخ ایجاد", auto_now_add=True)
     updated = models.DateTimeField("آخرین بروزرسانی", auto_now=True)
+
     status = models.CharField(
         "وضعیت", max_length=15, choices=STATUS_CHOICES, default="draft", db_index=True
     )
@@ -64,6 +71,12 @@ class Post(models.Model):
 
     def __repr__(self):
         return f"<Post(title={self.title}, status={self.status})>"
+
+    def total_likes(self):
+        return self.likes.count()
+
+    def total_dislikes(self):
+        return self.dislikes.count()
 
 
 class Account(models.Model):

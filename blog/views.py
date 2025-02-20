@@ -1,11 +1,21 @@
+from django.contrib import messages
+from django.contrib.auth import login, authenticate
+from django.contrib.postgres.search import (
+    SearchQuery,
+    SearchRank,
+    SearchVector,
+    TrigramSimilarity,
+)
 from django.core.mail import send_mail
-from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.core.paginator import Paginator
 from django.db.models import Count
+from django.db.models.functions import Greatest
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 from taggit.models import Tag
-from blog.forms import AccountForm, CommentForm, ShareForm
+
+from blog.forms import AccountForm, CommentForm, ShareForm, LoginForm, SearchForm
 from blog.models import Account, Post
-from django.contrib.postgres.search import SearchVector
 
 
 def index(request):
@@ -20,17 +30,10 @@ def postlist(request, tag_slug=None):
         tag = get_object_or_404(Tag, slug=tag_slug)
         posts = posts.filter(tags=tag)
 
-    paginator = Paginator(posts, 4)
+    paginator = Paginator(posts, 10)
     page = request.GET.get("page")
     posts = paginator.get_page(page)
     return render(request, "blog/post/postlist.html", {"posts": posts, "tag": tag})
-
-
-# class PostListView(ListView):
-#     queryset = Post.published.all()
-#     context_object_name = "posts"
-#     paginate_by = 4
-#     template_name = "blog/post/postlist.html"
 
 
 def post_details(request, slug, pk):
@@ -127,37 +130,68 @@ def share_post(request, post_id):
 
 
 def search(request, tag_slug=None):
-    query = (
-        request.GET.get("search_input")
-        if request.method == "GET"
-        else request.GET.get("search_input")
-    )
+    form = SearchForm(request.GET)
+    query = ""
     tag = None
     results = Post.published.all()
 
-    if query:
-        results = Post.published.annotate(search=SearchVector("body", "title")).filter(
-            body__search=query
-        )
-
-
     if tag_slug:
-        try:
-            tag = Tag.objects.get(slug=tag_slug)
-            results = results.filter(tags__in=[tag])
-        except Tag.DoesNotExist:
-            tag = None
+        tag = get_object_or_404(Tag, slug=tag_slug)
+        results = results.filter(tags=tag)
+
+    if form.is_valid():
+        query = form.cleaned_data["search_input"].strip()
+        if query:
+            request.session["query"] = query
+        else:
+            query = request.session.get("query", "")
+
+    if query:
+        search_vector = SearchVector("body", weight="B", config="persian") + \
+                        SearchVector("title", weight="A", config="persian")
+        search_query = SearchQuery(query, config="persian", search_type="plain")
+
+        results = (
+            results.annotate(
+                similarity=Greatest(
+                    TrigramSimilarity("body", query), TrigramSimilarity("title", query)
+                ),
+                search=search_vector,
+                rank=SearchRank(search_vector, search_query),
+            )
+            .filter(rank__gte=0.2, similarity__gte=0.05)
+            .order_by("-rank", "-similarity")
+        )
 
     paginator = Paginator(results, 4)
     page = request.GET.get("page")
-
-    try:
-        posts = paginator.page(page)
-    except PageNotAnInteger:
-        posts = paginator.page(1)
-    except EmptyPage:
-        posts = paginator.page(paginator.num_pages)
+    posts = paginator.get_page(page)
 
     return render(
-        request, "blog/post/postlist.html", {"posts": posts, "tag": tag, "page": page}
+        request,
+        "blog/post/postlist.html",
+        {"posts": posts, "tag": tag, "page": page, "form": form},
     )
+
+
+def user_login(request):
+    if request.method == "POST":
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data["username"]
+            password = form.cleaned_data["password"]
+            user = authenticate(request, username=username, password=password)
+
+            if user is not None:
+                if user.is_active:
+                    login(request, user)
+                    messages.success(request, "شما با موفقیت وارد شدید.")
+                    return redirect(reverse("index"))
+                else:
+                    messages.error(request, "حساب کاربری شما غیرفعال است.")
+            else:
+                messages.error(request, "نام کاربری یا رمز عبور اشتباه است.")
+    else:
+        form = LoginForm()
+
+    return render(request, "blog/form/account/login.html", {"form": form})
