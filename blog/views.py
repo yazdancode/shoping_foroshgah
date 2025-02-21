@@ -147,8 +147,9 @@ def search(request, tag_slug=None):
             query = request.session.get("query", "")
 
     if query:
-        search_vector = SearchVector("body", weight="B", config="persian") + \
-                        SearchVector("title", weight="A", config="persian")
+        search_vector = SearchVector(
+            "body", weight="B", config="persian"
+        ) + SearchVector("title", weight="A", config="persian")
         search_query = SearchQuery(query, config="persian", search_type="plain")
 
         results = (
