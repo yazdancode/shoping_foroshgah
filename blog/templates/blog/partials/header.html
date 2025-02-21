@@ -10,5 +10,9 @@
 
     {% if request.user.is_authenticated %}
         <p>{{ request.user.first_name }} سلام</p>
+        <a class="login-p" href="{% url 'logout' %}">logout</a>
+    {% else %}
+        <a class="login-p" href="{% url 'login' %}" >worode be site</a>
     {% endif %}
+         <a class="login-p" href="{% url 'index' %}">page asli</a>
 </div>

@@ -8,6 +8,7 @@ from blog.views import (
     share_post,
     user_account,
     user_login,
+    logout_view,
 )
 
 urlpatterns = [
@@ -24,4 +25,5 @@ urlpatterns = [
     path("search/", search, name="search"),
     path("search/<slug:tag_slug>/", search, name="search_by_tag"),
     path("login/", user_login, name="login"),
+    path("logout/", logout_view, name="logout"),
 ]
