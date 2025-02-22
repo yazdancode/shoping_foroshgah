@@ -1,5 +1,7 @@
 from django.contrib import messages
-from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.hashers import check_password
 from django.contrib.postgres.search import (
     SearchQuery,
     SearchRank,
@@ -10,11 +12,19 @@ from django.core.mail import send_mail
 from django.core.paginator import Paginator
 from django.db.models import Count
 from django.db.models.functions import Greatest
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from taggit.models import Tag
 
-from blog.forms import AccountForm, CommentForm, ShareForm, LoginForm, SearchForm
+from blog.forms import (
+    AccountForm,
+    ChangePasswordForm,
+    CommentForm,
+    LoginForm,
+    SearchForm,
+    ShareForm,
+)
 from blog.models import Account, Post
 
 
@@ -201,3 +211,37 @@ def user_login(request):
 def logout_view(request):
     logout(request)
     return redirect("index")
+
+
+@login_required(login_url="index")
+def change_password(request):
+    if request.method == "POST":
+        user = request.user
+        form = ChangePasswordForm(request.POST)
+
+        if form.is_valid():
+            cd = form.cleaned_data
+            old_password = cd["old_password"]
+            new_password1 = cd["new_password1"]
+            new_password2 = cd["new_password2"]
+
+            if not check_password(old_password, user.password):
+                return HttpResponse("رمز عبور قبلی شما اشتباه است!", status=400)
+
+            if new_password1 != new_password2:
+                return HttpResponse(
+                    "رمز عبور جدید با تکرار آن مطابقت ندارد!", status=400
+                )
+            user.set_password(new_password1)
+            user.save()
+            update_session_auth_hash(request, user)
+            return redirect("login")
+
+        else:
+            return render(
+                request, "blog/form/account/change_password.html", {"form": form}
+            )
+
+    else:
+        form = ChangePasswordForm()
+    return render(request, "blog/form/account/change_password.html", {"form": form})

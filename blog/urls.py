@@ -1,14 +1,15 @@
 from django.urls import path
 
 from blog.views import (
+    change_password,
     index,
+    logout_view,
     post_details,
     postlist,
     search,
     share_post,
     user_account,
     user_login,
-    logout_view,
 )
 
 urlpatterns = [
@@ -26,4 +27,5 @@ urlpatterns = [
     path("search/<slug:tag_slug>/", search, name="search_by_tag"),
     path("login/", user_login, name="login"),
     path("logout/", logout_view, name="logout"),
+    path("change-password/", change_password, name="change_password"),
 ]

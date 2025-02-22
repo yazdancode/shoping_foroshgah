@@ -179,3 +179,40 @@ class LoginForm(forms.Form):
             }
         ),
     )
+
+
+class ChangePasswordForm(forms.Form):
+    old_password = forms.CharField(
+        widget=forms.PasswordInput, label="رمز عبور قبلی", required=True
+    )
+    new_password1 = forms.CharField(
+        widget=forms.PasswordInput, label="رمز عبور جدید", required=True
+    )
+    new_password2 = forms.CharField(
+        widget=forms.PasswordInput, label="تکرار رمز عبور جدید", required=True
+    )
+
+    def clean_old_password(self):
+        old_password = self.cleaned_data.get("old_password")
+        return old_password
+    def clean_new_password1(self):
+        new_password = self.cleaned_data.get("new_password1")
+        if len(new_password) < 8:
+            raise ValidationError("رمز عبور جدید باید حداقل ۸ کاراکتر داشته باشد.")
+        if not any(char.isdigit() for char in new_password):
+            raise ValidationError("رمز عبور جدید باید حداقل یک عدد داشته باشد.")
+        if not any(char.isalpha() for char in new_password):
+            raise ValidationError("رمز عبور جدید باید حداقل یک حرف داشته باشد.")
+        if not any(char in "!@#$%^&*()_+" for char in new_password):
+            raise ValidationError("رمز عبور جدید باید حداقل یک علامت خاص داشته باشد.")
+
+        return new_password
+
+    def clean(self):
+        cleaned_data = super().clean()
+        new_password1 = cleaned_data.get("new_password1")
+        new_password2 = cleaned_data.get("new_password2")
+        if new_password1 and new_password2:
+            if new_password1 != new_password2:
+                raise forms.ValidationError("رمز عبور جدید با تکرار آن مطابقت ندارد.")
+        return cleaned_data

@@ -7,12 +7,12 @@
         </div>
         <input type="submit" value="جستجو" class="search-submit">
     </form>
-
     {% if request.user.is_authenticated %}
         <p>{{ request.user.first_name }} سلام</p>
-        <a class="login-p" href="{% url 'logout' %}">logout</a>
+        <a class="login-p" href="{% url 'logout' %}">خروج</a>
+        <a href="{% url 'change_password' %}">تغییر رمز عبور</a>
     {% else %}
-        <a class="login-p" href="{% url 'login' %}" >worode be site</a>
+        <a class="login-p" href="{% url 'login' %}">ورود به سایت</a>
     {% endif %}
-         <a class="login-p" href="{% url 'index' %}">page asli</a>
+    <a class="login-p" href="{% url 'index' %}">صفحه اصلی</a>
 </div>
